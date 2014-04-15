@@ -28,7 +28,7 @@ class Attachments extends ClientAbstract {
           $file_index = count($path_array) - 1;
           $params['name'] = $path_array[$file_index];
         }
-        $endPoint = Http::prepare('uploads.json?filename='.$params['name'].(isset($params['optional_token']) ? '&token='.$params['optional_token'] : ''));
+        $endPoint = Http::prepare('uploads.json?filename='.$params['filename'].(isset($params['optional_token']) ? '&token='.$params['optional_token'] : ''));
         $response = Http::send($this->client, $endPoint, array('file' => $params['file'], 'filename'=>$params['filename']), 'POST', (isset($params['type']) ? $params['type'] : 'application/binary'));
        /* if ((!is_object($response)) || ($this->client->getDebug()->lastResponseCode != 201)) {
             throw new ResponseException(__METHOD__);

@@ -39,13 +39,17 @@ class Http {
 
         $url = $client->getApiUrl().$endPoint;
         $method = strtoupper($method);
+        if (is_array($json) && isset($json['file']))
+          $jsonfile = true;
+        else
+          $jsonfile = false;
         $json = ($json == null ? (object) null : (($method != 'GET') && ($method != 'DELETE') && ($contentType == 'application/json') ? json_encode($json) : $json));
 
         if($method == 'POST') {
           $curl = curl_init($url);
           curl_setopt($curl, CURLOPT_POST, true);
           curl_setopt($curl, CURLOPT_POSTFIELDS, $json);
-            if(isset($json['file'])) {
+          if($jsonfile) {
             $file = fopen($json['file'], 'r');
             $size = filesize($json['file']);
             $filedata = fread($file, $size);
