@@ -59,7 +59,7 @@ class Client {
     public function __construct($subdomain, $username) {
         $this->subdomain = $subdomain;
         $this->username = $username;
-        $this->apiUrl = 'https://'.$subdomain.'.zendesk.com/api/'.$this->apiVer.'/';
+        $this->apiUrl = 'http://'.$subdomain.'.zendesk.com/api/'.$this->apiVer.'/';
         $this->debug = new Debug();
         $this->tickets = new Tickets($this);
         $this->ticketFields = new TicketFields($this);
