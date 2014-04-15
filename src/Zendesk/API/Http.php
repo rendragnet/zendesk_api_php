@@ -45,9 +45,9 @@ class Http {
           $curl = curl_init($url);
           curl_setopt($curl, CURLOPT_POST, true);
           curl_setopt($curl, CURLOPT_POSTFIELDS, $json);
-            if(isset($json['filename'])) {
-            $file = fopen($json['filename'], 'r');
-            $size = filesize($json['filename']);
+            if(isset($json['file'])) {
+            $file = fopen($json['file'], 'r');
+            $size = filesize($json['file']);
             $filedata = fread($file, $size);
             curl_setopt($curl, CURLOPT_POSTFIELDS, $filedata);
             curl_setopt($curl, CURLOPT_INFILE, $file);
@@ -103,7 +103,7 @@ class Http {
      */
     public static function oauth($client, $code, $oAuthId, $oAuthSecret) {
 
-        $url = 'https://'.$client->getSubdomain().'.zendesk.com/oauth/tokens';
+        $url = 'http://'.$client->getSubdomain().'.zendesk.com/oauth/tokens';
         $method = 'POST';
 
         $curl = curl_init($url);
