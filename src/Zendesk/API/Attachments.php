@@ -11,10 +11,11 @@ class Attachments extends ClientAbstract {
      * Upload an attachment
      * $params must include:
      *    'file' - an attribute with the absolute local file path on the server
+     *    'filename' - Name to send to the API
      *    'type' - the MIME type of the file
      * Optional:
      *    'optional_token' - an existing token
-     *		'name' - preferred filename
+     *		'name' - preferred filename  Note: this is not used at all, not sure why it's here.
      */
     public function upload(array $params) {
         if(!$this->hasKeys($params, array('file'))) {
