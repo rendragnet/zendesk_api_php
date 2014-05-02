@@ -10,7 +10,7 @@ class Http {
     /*
      * Prepares an endpoint URL with optional side-loading
      */
-    public static function prepare($endPoint, $sideload = null, $iterators = null) {
+    public static function prepare($endPoint, $sideload = null, &$iterators = null) {
         $addParams = array();
         // First look for side-loaded variables
         if(is_array($sideload)) {
@@ -21,6 +21,8 @@ class Http {
             foreach($iterators as $k => $v) {
                 if(in_array($k, array('per_page', 'page', 'sort_order'))) {
                     $addParams[$k] = $v;
+                    // Unset th ekey, otherwise we end up with (e.g) ?page=2&query=xx&page=2 which results in a blank response from Zendesk API
+                    unset($iterators[$k]);
                 }
             }
         }
@@ -64,7 +66,8 @@ class Http {
             curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'PUT');
             curl_setopt($curl, CURLOPT_POSTFIELDS, $json);
         } else {
-            $curl = curl_init($url.($json != (object) null ? '?'.http_build_query($json) : ''));
+          // Add check for ? in URL, otherwise we end up with ?page=2?query=xxx&page=2 when page has been passed
+            $curl = curl_init($url.($json != (object) null ? (strpos($url, '?')>0?'&':'?').http_build_query($json) : ''));
             curl_setopt($curl, CURLOPT_CUSTOMREQUEST, ($method ? $method : 'GET'));
         }
         if($client->getAuthType() == 'oauth_token') {
@@ -83,12 +86,21 @@ class Http {
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($curl, CURLOPT_MAXREDIRS, 3);
         $response = curl_exec($curl);
-        if($file) {
+        if(isset($file) && $file!=null) {
 	        fclose($file);
         }
         if ($response === false) {
-            throw new \Exception('No response from curl_exec in '.__METHOD__);
+          // Zendesk randomly times out. retrying every call twice on no response seems to fix it nicely.
+          $response = curl_exec($curl);
+          if ($response ===false) {
+           $response = curl_exec($curl);
+            if ($response===false) {
+              // Ok, the server is down or we have no internet, throw an exception
+              throw new \Exception('No response from curl_exec in '.__METHOD__);
+            }
+          }
         }
+
         $headerSize = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
         $responseBody = substr($response, $headerSize);
         $client->setDebug(

@@ -24,17 +24,17 @@ class Attachments extends ClientAbstract {
         if(!file_exists($params['file'])) {
             throw new CustomException('File '.$params['file'].' could not be found in '.__METHOD__);
         }
-        if(!$params['name']) {
+        if(!isset($params['name'])) {
           $path_array = explode('/', $params['file']);
           $file_index = count($path_array) - 1;
           $params['name'] = $path_array[$file_index];
         }
         $endPoint = Http::prepare('uploads.json?filename='.$params['filename'].(isset($params['optional_token']) ? '&token='.$params['optional_token'] : ''));
         $response = Http::send($this->client, $endPoint, array('file' => $params['file'], 'filename'=>$params['filename']), 'POST', (isset($params['type']) ? $params['type'] : 'application/binary'));
-       /* if ((!is_object($response)) || ($this->client->getDebug()->lastResponseCode != 201)) {
+        if ((!is_object($response)) || ($this->client->getDebug()->lastResponseCode != 201)) {
             throw new ResponseException(__METHOD__);
         }
-        $this->client->setSideload(null);*/
+        $this->client->setSideload(null);
         return $response;
     }
 
