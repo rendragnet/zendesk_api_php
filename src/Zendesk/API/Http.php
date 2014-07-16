@@ -100,13 +100,13 @@ class Http {
             }
           }
         }
-
         $headerSize = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
         $responseBody = substr($response, $headerSize);
         $client->setDebug(
             curl_getinfo($curl, CURLINFO_HEADER_OUT),
             curl_getinfo($curl, CURLINFO_HTTP_CODE),
-            substr($response, 0, $headerSize)
+            substr($response, 0, $headerSize),
+            $json
         );
         curl_close($curl);
 

@@ -54,6 +54,7 @@ class Client {
     protected $triggers;
     protected $voice;
     protected $locales;
+    protected $hc_sections;
     protected $debug;
 
    /***
@@ -99,6 +100,7 @@ class Client {
         $this->targets = new Targets($this);
         $this->triggers = new Triggers($this);
         $this->voice = new Voice($this);
+        $this->hc_sections = new HCSections($this);
         $this->locales = new Locales($this);
     }
 
@@ -153,9 +155,10 @@ class Client {
     /*
      * Set debug information as an object
      */
-    public function setDebug($lastRequestHeaders, $lastResponseCode, $lastResponseHeaders) {
+    public function setDebug($lastRequestHeaders, $lastResponseCode, $lastResponseHeaders, $lastRequestJson) {
         $this->debug->lastRequestHeaders = $lastRequestHeaders;
         $this->debug->lastResponseCode = $lastResponseCode;
+        $this->debug->lastRequestJson = $lastRequestJson;
         $this->debug->lastResponseHeaders = $lastResponseHeaders;
     }
 

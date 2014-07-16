@@ -9,6 +9,7 @@ class Debug {
 
     public $lastRequestHeaders;
     public $lastResponseCode;
+    public $lastRequestJson;
     public $lastResponseHeaders;
 
 }
