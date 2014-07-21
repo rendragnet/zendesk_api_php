@@ -58,7 +58,7 @@ class HCArticles extends ClientAbstract {
     if(!$this->hasKeys($params, array('query'))) {
       throw new MissingParametersException(__METHOD__, array('query'));
     }
-    $endPoint = Http::prepare('help_center/articles/search.json', $this->client->getSideload($params));
+    $endPoint = Http::prepare('help_center/articles/search.json?query='.$params['query'], $this->client->getSideload($params));
     $response = Http::send($this->client, $endPoint);
     if ((!is_object($response)) || ($this->client->getDebug()->lastResponseCode != 200)) {
       throw new ResponseException(__METHOD__);
