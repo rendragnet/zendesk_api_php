@@ -55,6 +55,7 @@ class Client {
     protected $voice;
     protected $locales;
     protected $hc_sections;
+    protected $hc_articles;
     protected $debug;
 
    /***
@@ -101,6 +102,7 @@ class Client {
         $this->triggers = new Triggers($this);
         $this->voice = new Voice($this);
         $this->hc_sections = new HCSections($this);
+        $this->hc_articles = new HCArticles($this);
         $this->locales = new Locales($this);
     }
 
