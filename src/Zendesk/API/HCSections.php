@@ -38,7 +38,7 @@ class HCSections extends ClientAbstract {
         if(!$this->hasKeys($params, array('id'))) {
             throw new MissingParametersException(__METHOD__, array('id'));
         }
-        $endPoint = Http::prepare('help_center/sections/'.$params['id'].'.json', $this->client->getSideload($params));
+        $endPoint = Http::prepare('help_center/sections/'.$params['id'].'.json?include=access_policies', $this->client->getSideload($params));
         $response = Http::send($this->client, $endPoint);
         if ((!is_object($response)) || ($this->client->getDebug()->lastResponseCode != 200)) {
             throw new ResponseException(__METHOD__);
