@@ -213,4 +213,15 @@ class Client {
     public function search(array $params) { return $this->search->search($params); }
     public function anonymousSearch(array $params) { return $this->search->anonymousSearch($params); }
 
+    public function import(array $params) {
+        $endPoint = Http::prepare('imports/tickets.json');
+        $response = Http::send($this, $endPoint, array ('ticket' => $params), 'POST');
+        if ((!is_object($response)) || ($this->getDebug()->lastResponseCode != 201)) {
+            var_dump($this->getDebug());
+            throw new ResponseException(__METHOD__);
+        }
+        $this->setSideload(null);
+        return $response;
+    }
+
 }
