@@ -38,7 +38,7 @@ class Http {
      * Use the send method to call every endpoint except for oauth/tokens
      */
     public static function send($client, $endPoint, $json = null, $method = 'GET', $contentType = 'application/json') {
-
+        $originaljson = $json;
         $url = $client->getApiUrl().$endPoint;
         $method = strtoupper($method);
         if (is_array($json) && isset($json['file']))
@@ -109,6 +109,17 @@ class Http {
             $json
         );
         curl_close($curl);
+        // Did we get a 503 or 429? If so, we need to retry..
+        if ($client->getDebug()->lastResponseCode==503 || $client->getDebug()->lastResponseCode==429) {
+            //echo "Got 503/429\n";
+            // Retry-After?
+            if (preg_match("/Retry-After: ([0-9]*)\r/", $client->getDebug()->lastResponseHeaders, $match)) {
+                // Ok, need to sleep for $match[1] +1 seconds
+                //echo "Sleeping for ".$match[1]." seconds\n";
+                sleep($match[1]+1);
+                return self::send($client, $endPoint, $originaljson, $method, $contentType) ;
+            }
+        }
 
         return json_decode($responseBody);
 
